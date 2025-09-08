@@ -141,7 +141,6 @@ try:
                             ],
                             dtype=self.cache_torch_dtype,
                             device=self.backend.get_torch_device_name(),
-                            creator=torch.empty,
                         ),
                         "v_cache": OpTensorInfo(
                             shape=[
@@ -152,7 +151,6 @@ try:
                             ],
                             dtype=self.cache_torch_dtype,
                             device=self.backend.get_torch_device_name(),
-                            creator=torch.empty,
                         ),
                     }
                 )
