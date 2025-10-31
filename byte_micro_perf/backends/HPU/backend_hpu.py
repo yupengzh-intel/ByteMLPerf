@@ -21,6 +21,7 @@ import logging
 import subprocess
 import pathlib
 import shutil
+import time
 
 from datetime import timedelta
 import torch.distributed as dist
@@ -108,6 +109,50 @@ class BackendHPU(Backend):
     def get_dist_backend(self):
         return "hccl"
 
+    def _build_profile_filename(self, op_instance, timestamp):
+        """根据op实例动态构建有意义的profile文件名"""
+        op_name = op_instance.__class__.__name__
+        args_dict = op_instance.args_dict
+        
+        # 清理文件名部分，移除无效字符
+        def sanitize_filename_part(text):
+            unsafe_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
+            for char in unsafe_chars:
+                text = text.replace(char, '_')
+            return text
+        
+        # 参数排序：确保相同的参数组合生成相同的文件名
+        sorted_keys = sorted(args_dict.keys())
+        
+        param_parts = []
+        for key in sorted_keys:
+            value = args_dict[key]
+            
+            # 跳过None值
+            if value is None:
+                continue
+                
+            # 处理不同类型的值
+            if isinstance(value, (str, int, float, bool)):
+                safe_key = sanitize_filename_part(str(key))
+                safe_value = sanitize_filename_part(str(value))
+                param_parts.append(f"{safe_key}_{safe_value}")
+            elif isinstance(value, list):
+                safe_key = sanitize_filename_part(str(key))
+                safe_value = "_".join(sanitize_filename_part(str(v)) for v in value)
+                param_parts.append(f"{safe_key}_{safe_value}")
+            elif isinstance(value, dict):
+                # 对于字典，可以跳过或特殊处理
+                continue
+        
+        # 限制文件名长度，避免过长的文件名
+        params_str = "_".join(param_parts)
+        if len(params_str) > 200:  # 限制参数部分长度
+            params_str = params_str[:200] + "_truncated"
+        
+        filename = f"{op_name}_{params_str}_{timestamp}.pt.trace.json.gz"
+        return filename
+
     def core_perf(
         self, op_instance, 
         warmup_iterations, prefer_iterations, 
@@ -117,8 +162,35 @@ class BackendHPU(Backend):
         op_group = op_instance.op_group
         group_size = op_instance.group_size
 
+        # if profiling:
+        #     raise NotImplementedError("Profiling mode is not supported for HPU")
+
         if profiling:
-            raise NotImplementedError("Profiling mode is not supported for HPU")
+            # 创建自定义trace handler
+            def custom_trace_handler(prof):
+                timestamp = str(time.time_ns())
+                filename = self._build_profile_filename(op_instance, timestamp)
+                filepath = os.path.join("/workspace/profile", filename)
+                prof.export_chrome_trace(filepath)
+                logging.info(f"Profile saved to: {filepath}")
+
+            schedule = torch.profiler.schedule(
+                wait=0,
+                warmup=0,
+                active=1,
+            )
+            prof=torch.profiler.profile(
+                schedule=schedule,
+                activities=[
+                    torch.profiler.ProfilerActivity.CPU,
+                    torch.profiler.ProfilerActivity.HPU,
+                ],
+                on_trace_ready=custom_trace_handler,
+                record_shapes=True,
+                with_modules=False,
+                profile_memory=False,
+                with_stack=True,
+            )
 
         ht.core.mark_step()
         for i in range(warmup_iterations):
@@ -127,6 +199,9 @@ class BackendHPU(Backend):
             ht.core.mark_step()
         start_event = torch.hpu.Event(enable_timing=True)
         end_event = torch.hpu.Event(enable_timing=True)
+
+        if profiling:
+            prof.start()
 
         self.device_synchronize()
         self.op_group_barrier(op_group=op_group, group_size=group_size)
@@ -137,6 +212,9 @@ class BackendHPU(Backend):
         self.device_synchronize()
         end_event.record()
         end_event.synchronize()
+
+        if profiling:
+            prof.stop()
 
         latency_us = start_event.elapsed_time(end_event) * 1e3 / prefer_iterations
         return latency_us, []
