@@ -25,15 +25,6 @@ try:
 
     from habana_frameworks.torch.hpex.kernels import FusedSDPA
 
-    from vllm_hpu_extension import ops
-    from vllm_hpu_extension.utils import Matmul, VLLMKVCache
-    import vllm_hpu_extension.environment as environment
-
-    model_config = types.SimpleNamespace()
-    setattr(model_config, "model_type", "llama")
-
-    environment.set_model_config(model_config)
-
     class FusedSDPAOP(FlashAttentionOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)
