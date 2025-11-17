@@ -25,6 +25,9 @@ try:
 
     from habana_frameworks.torch.hpex.kernels import FusedSDPA
 
+    os.environ["PT_HPU_SDPA_Q_SLICE_SIZE"]="1024"
+    os.environ["PT_HPU_QKV_SLICE_SEQ_LEN_THLD"]="1024"
+
     class FusedSDPAOP(FlashAttentionOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)
