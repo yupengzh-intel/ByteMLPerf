@@ -37,7 +37,7 @@ try:
         )
         raise FileNotFoundError(SYCL_TLA_BUILD_DIR)
 
-    @ProviderRegistry.register_vendor_impl("flash_attention", "sycl_tla_flash_attention")
+    # @ProviderRegistry.register_vendor_impl("flash_attention", "sycl_tla_flash_attention")
     class SyclTlaFAOp(FlashAttentionOp):
         # Supported head dims per the sycl-tla CMakeLists.txt
         SUPPORTED_HDIMS = [64, 96, 128, 192]

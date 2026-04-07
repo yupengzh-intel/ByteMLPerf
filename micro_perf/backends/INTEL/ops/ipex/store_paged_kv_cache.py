@@ -34,8 +34,8 @@ try:
 
             # dst_dtype
             self.dst_dtype = self.args_dict.get("cache_dtype", self.args_dict.get("dst_dtype", "int8"))
-            if not self.dst_dtype in ["int8"]:
-                raise NotImplementedError
+            # if not self.dst_dtype in ["int8"]:
+            #     raise NotImplementedError
             self.torch_dst_dtype = getattr(torch, self.dst_dtype)
 
             # pre-defined attrs

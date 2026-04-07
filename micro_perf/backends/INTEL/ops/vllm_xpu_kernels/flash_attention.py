@@ -56,8 +56,8 @@ try:
 
             # Convert from [B, H, S, D] to [total_tokens, H, D]
             B, H, S, D = k_cache.shape
-            k = k_cache.permute(0, 2, 1, 3).reshape(B * S, H, D)
-            v = v_cache.permute(0, 2, 1, 3).reshape(B * S, H, D)
+            k = k_cache.permute(0, 2, 1, 3).contiguous().reshape(B * S, H, D)
+            v = v_cache.permute(0, 2, 1, 3).contiguous().reshape(B * S, H, D)
 
             # Use actual sequence lengths for cu_seqlens
             cu_seqlens_q = accum_q_lens.to(torch.int32)

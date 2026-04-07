@@ -4,3 +4,6 @@ reports/
 reports_replay
 kernel_meta/
 temp
+__pycache__/
+*.pyc
+*.pyo

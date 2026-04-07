@@ -14,7 +14,7 @@ try:
     import torch
     torch.ops.torch_ipex.residual_rms_norm
 
-    @ProviderRegistry.register_vendor_impl("rms_norm", "ipex")
+    # @ProviderRegistry.register_vendor_impl("rms_norm", "ipex")
     class RMSNormIpexOp(BasicOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)

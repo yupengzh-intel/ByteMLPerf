@@ -33,7 +33,7 @@ def _build_cos_sin_cache(max_seq_len, rotary_dim, base=10000.0):
 try:
     import vllm_xpu_kernels._C
 
-    @ProviderRegistry.register_vendor_impl("rotary_embedding", "vllm_xpu_kernels")
+    # @ProviderRegistry.register_vendor_impl("rotary_embedding", "vllm_xpu_kernels")
     class VLLMXPUKernelsRotaryEmbeddingOp(RotaryEmbeddingOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)

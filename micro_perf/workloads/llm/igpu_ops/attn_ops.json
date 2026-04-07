@@ -53,7 +53,7 @@
         {
             "arg_type": "llm",
             "dtype": "bfloat16",
-            "dst_dtype": "int8",
+            "dst_dtype": "bfloat16",
             "mode": "decode",
             "q_head_num.kv_head_num.head_dim": [
                 [96, 8, 128]
@@ -65,7 +65,7 @@
         {
             "arg_type": "llm",
             "dtype": "bfloat16",
-            "dst_dtype": "int8",
+            "dst_dtype": "bfloat16",
             "mode": "prefill",
             "q_head_num.kv_head_num.head_dim": [
                 [96, 8, 128]
@@ -79,7 +79,7 @@
         {
             "arg_type": "llm",
             "dtype": "bfloat16",
-            "dst_dtype": "int8",
+            "dst_dtype": "bfloat16",
             "block_size": [512],
             "total_block_num": [1024],
             "mode": "decode",
@@ -93,7 +93,7 @@
         {
             "arg_type": "llm",
             "dtype": "bfloat16",
-            "dst_dtype": "int8",
+            "dst_dtype": "bfloat16",
             "block_size": [512],
             "total_block_num": [1024],
             "mode": "prefill",

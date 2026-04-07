@@ -16,7 +16,7 @@ from core.utils import OpTensorInfo, calc_tensor_size
 try:
     import vllm_xpu_kernels._moe_C
 
-    @ProviderRegistry.register_vendor_impl("moe_softmax_topk", "vllm_xpu_kernels")
+    # @ProviderRegistry.register_vendor_impl("moe_softmax_topk", "vllm_xpu_kernels")
     class VLLMXPUKernelsMoeSoftmaxTopkOp(MoeSoftmaxTopkOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)

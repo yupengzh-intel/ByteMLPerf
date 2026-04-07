@@ -221,4 +221,4 @@ class StorePagedKVCacheOp(BasicOp):
         return k_cache, v_cache
 
 
-OP_MAPPING["torch"] = StorePagedKVCacheOp
+# OP_MAPPING["torch"] = StorePagedKVCacheOp

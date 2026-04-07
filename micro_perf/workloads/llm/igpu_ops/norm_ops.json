@@ -27,6 +27,26 @@
             "num_tokens": [40, 80, 4096]
         }
     ],
+    "add_rms_norm": [
+        {
+            "arg_type": "llm",
+            "dtype": "bfloat16",
+            "hidden_size": [7168],
+            "num_tokens": [40, 80, 4096]
+        }
+    ],
+    "head_rms_norm_dynamic_quant": [
+        {
+            "arg_type": "llm",
+            "dtype": "bfloat16",
+            "dst_dtype": "int8",
+            "num_tokens": [40, 80, 4096],
+            "head_num.head_dim": [
+                [96, 128],
+                [8, 128]
+            ]
+        }
+    ],
     "scale_dynamic_quant": [
         {
             "arg_type": "llm",
@@ -34,6 +54,15 @@
             "dst_dtype": "int8",
             "hidden_size": [7168, 10240, 16384],
             "num_tokens": [4096, 40, 80]
+        }
+    ],
+    "swiglu_dynamic_quant": [
+        {
+            "arg_type": "llm",
+            "dtype": "bfloat16",
+            "dst_dtype": "int8",
+            "hidden_size": [7168],
+            "num_tokens": [40, 80, 4096]
         }
     ]
 }

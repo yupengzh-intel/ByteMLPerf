@@ -16,7 +16,7 @@ from core.utils import OpTensorInfo, calc_tensor_size
 try:
     torch.ops.torch_ipex.specialized_gating_gemm
 
-    @ProviderRegistry.register_vendor_impl("moe_gating_gemm", "ipex")
+    # @ProviderRegistry.register_vendor_impl("moe_gating_gemm", "ipex")
     class MoeGatingGemmIpexOp(BasicOp):
         def __init__(self, args_dict, backend, *args, **kwargs):
             super().__init__(args_dict, backend, *args, **kwargs)

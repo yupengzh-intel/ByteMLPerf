@@ -153,4 +153,4 @@ class AddRmsNormDynamicQuantOp(BasicOp):
 
 
 
-OP_MAPPING["torch"] = AddRmsNormDynamicQuantOp
+# OP_MAPPING["torch"] = AddRmsNormDynamicQuantOp
