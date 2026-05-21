@@ -384,15 +384,18 @@ try:
                 )
                 return y
 
-            flashinfer.gemm.group_gemm_nvfp4_nt_groupwise(
-                scatter_tokens,
-                experts_weight,
-                tensor_mapping["a_scale"],
-                tensor_mapping["b_scale"],
-                segment_offsets,
-                out=y,
-            )
-            return y
+            if self.variant == "nvfp4":
+                flashinfer.gemm.group_gemm_nvfp4_nt_groupwise(
+                    scatter_tokens,
+                    experts_weight,
+                    tensor_mapping["a_scale"],
+                    tensor_mapping["b_scale"],
+                    segment_offsets,
+                    out=y,
+                )
+                return y
+
+            raise ValueError(f"Unexpected FlashInfer variant: {self.variant}")
 
 except Exception:
     pass
