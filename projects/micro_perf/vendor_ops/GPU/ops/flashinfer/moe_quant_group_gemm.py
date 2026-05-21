@@ -164,6 +164,7 @@ try:
                     shape=[self.dispatch_tokens, self.hidden_size],
                     dtype=self.torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["experts_weight"] = OpTensorInfo(
                     shape=[
@@ -173,6 +174,7 @@ try:
                     ],
                     dtype=self.w_torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["alpha"] = OpTensorInfo(
                     shape=[1],
@@ -189,6 +191,7 @@ try:
                     shape=[self.dispatch_tokens, self.hidden_size],
                     dtype=self.torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["experts_weight"] = OpTensorInfo(
                     shape=[
@@ -198,6 +201,7 @@ try:
                     ],
                     dtype=self.w_torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["a_scale"] = OpTensorInfo(
                     shape=[self.hidden_size // 128, self.dispatch_tokens],
@@ -227,6 +231,7 @@ try:
                     shape=[self.dispatch_tokens, self.hidden_size],
                     dtype=self.torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["experts_weight"] = OpTensorInfo(
                     shape=[
@@ -236,11 +241,13 @@ try:
                     ],
                     dtype=self.w_torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["a_scale"] = OpTensorInfo(
                     shape=[a_scale_rows, self.hidden_size // 32],
                     dtype=torch.uint8,
                     device=device,
+                    creator=torch.ones,
                 )
                 self.input_tensor_info["b_scale"] = OpTensorInfo(
                     shape=[
@@ -250,6 +257,7 @@ try:
                     ],
                     dtype=torch.uint8,
                     device=device,
+                    creator=torch.ones,
                 )
 
             else:
@@ -263,6 +271,7 @@ try:
                     shape=[self.dispatch_tokens, self.hidden_size // 2],
                     dtype=self.torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["experts_weight"] = OpTensorInfo(
                     shape=[
@@ -272,11 +281,13 @@ try:
                     ],
                     dtype=self.w_torch_dtype,
                     device=device,
+                    creator=torch.zeros,
                 )
                 self.input_tensor_info["a_scale"] = OpTensorInfo(
                     shape=[a_scale_rows, self.hidden_size // 16],
                     dtype=torch.uint8,
                     device=device,
+                    creator=torch.ones,
                 )
                 self.input_tensor_info["b_scale"] = OpTensorInfo(
                     shape=[
@@ -286,6 +297,7 @@ try:
                     ],
                     dtype=torch.uint8,
                     device=device,
+                    creator=torch.ones,
                 )
 
             self.input_tensor_info["segment_offsets"] = OpTensorInfo(
