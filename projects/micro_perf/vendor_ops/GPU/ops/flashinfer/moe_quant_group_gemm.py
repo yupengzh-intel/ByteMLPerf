@@ -20,10 +20,6 @@ try:
 
     @ProviderRegistry.register_vendor_impl("moe_quant_group_gemm", "flashinfer")
     class FlashInferMoeQuantGroupGemmOp:
-        def __init__(self, args_dict, backend, *args, **kwargs):
-            super().__init__(args_dict, backend, *args, **kwargs)
-            self.extra_providers = ["flashinfer"]
-
         def _resolve_variant(self):
             if (
                 self.dtype == "bfloat16"
@@ -92,6 +88,8 @@ try:
                     self.expert_dispatch_token_count,
                 )
             ):
+                # FlashInfer's FP4 grouped GEMM pads each group scale matrix
+                # independently and places later groups at aligned row offsets.
                 padded_offset = (
                     ceil_div(offset + group_idx * (alignment - 1), alignment)
                     * alignment
@@ -129,6 +127,7 @@ try:
         def vendor_impl(self):
             self.dst_torch_dtype = get_torch_dtype(self.dst_dtype)
             self.segment_offsets_data = self._get_segment_offsets_data()
+            self.extra_providers = ["flashinfer"]
 
             self.input_tensor_info = {}
             self.output_tensor_info = {}
@@ -260,7 +259,7 @@ try:
                     creator=torch.ones,
                 )
 
-            else:
+            elif self.variant == "nvfp4":
                 self.torch_dtype = torch.uint8
                 self.w_torch_dtype = torch.uint8
 
@@ -299,6 +298,8 @@ try:
                     device=device,
                     creator=torch.ones,
                 )
+            else:
+                raise ValueError(f"Unexpected FlashInfer variant: {self.variant}")
 
             self.input_tensor_info["segment_offsets"] = OpTensorInfo(
                 shape=[self.num_experts_per_rank + 1],
